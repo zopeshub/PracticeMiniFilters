@@ -17,7 +17,7 @@ Environment:
 #include <fltKernel.h>
 #include <dontuse.h>
 #include <suppress.h>
-
+#define MAX_DEVNAME_LENGTH 260
 #pragma prefast(disable:__WARNING_ENCODE_MEMBER_FUNCTION_POINTER, "Not valid for kernel mode drivers")
 
 
@@ -404,7 +404,7 @@ Return Value:
     PAGED_CODE();
 
 	DbgPrint("FsDebugFilter!FsDebugFilterInstanceSetup: Entered\n");
-	pBuffer = ExAllocatePoolWithTag(NonPagedPool, sizeof(FILTER_VOLUME_BASIC_INFORMATION), 'BAVI');
+	pBuffer = ExAllocatePoolWithTag(NonPagedPool, MAX_DEVNAME_LENGTH + 2 , 'BAVI');
     
 	if (!pBuffer)
 	{
@@ -412,7 +412,7 @@ Return Value:
 		return STATUS_SUCCESS;
 	}
 
-	ntRet = FltGetVolumeInformation(FltObjects->Volume, FilterVolumeBasicInformation, pBuffer, sizeof(FILTER_VOLUME_BASIC_INFORMATION), &ulBytesReturned);
+	ntRet = FltGetVolumeInformation(FltObjects->Volume, FilterVolumeBasicInformation, pBuffer, MAX_DEVNAME_LENGTH + 2, &ulBytesReturned);
 	
 	if (!NT_SUCCESS(ntRet))
 	{
